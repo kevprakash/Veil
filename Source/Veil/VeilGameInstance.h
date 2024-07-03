@@ -26,9 +26,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FPLAYER_DATA getPlayerData(AController* newPlayer);
 
+	void setPlayerData(AController* player, FPLAYER_DATA newData);
+
+	void updatePlayerTeam(AController* player, int newTeam);
+
 	TMap<AController*, FPLAYER_DATA> getAllPlayerData();
 
-
+	void clearPlayerData();
 
 protected:
 	virtual void Init() override;

@@ -17,10 +17,24 @@ class VEIL_API AVeilGameModeBase : public AGameMode
 	
 public:
 
+	AVeilGameModeBase(const FObjectInitializer& ObjectInitializer);
+
 	void updateGameState();
 
 	TMap<AController*, FPLAYER_DATA> getAllPlayerData();
 
+	void changePlayerTeam(AController* player, int newTeam);
+
+	int getPlayerTeam(AController* player);
+
+	UFUNCTION(BlueprintCallable)
+	void startGame();
+
 protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;
+
+	virtual void HandleSeamlessTravelPlayer(AController*& newPlayer) override;
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OnMatchLoadPlayer(AController* player);
 };

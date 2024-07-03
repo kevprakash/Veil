@@ -4,10 +4,10 @@
 #include "VeilGameModeBase.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
-#include "steam/steam_api.h"
 #include "Online/OnlineSessionNames.h"
 #include <string>
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 void UVeilGameInstance::registerPlayer(AController* newPlayer) {
     if (newPlayer) {
@@ -38,8 +38,23 @@ FPLAYER_DATA UVeilGameInstance::getPlayerData(AController* newPlayer) {
 	return playerData[newPlayer];
 }
 
+void UVeilGameInstance::setPlayerData(AController* player, FPLAYER_DATA newData)
+{
+    playerData[player] = newData;
+}
+
+void UVeilGameInstance::updatePlayerTeam(AController* player, int newTeam)
+{
+    playerData[player].team = newTeam;
+}
+
 TMap<AController*, FPLAYER_DATA> UVeilGameInstance::getAllPlayerData() {
     return playerData;
+}
+
+void UVeilGameInstance::clearPlayerData()
+{
+    playerData.Empty();
 }
 
 void UVeilGameInstance::Init() {
@@ -75,7 +90,9 @@ void UVeilGameInstance::OnCreateSessionComplete(FName serverName, bool success) 
     if (success) {
         if (GEngine)
             GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Created server with name: " + serverName.ToString()));
-        GetWorld()->ServerTravel("/Game/Maps/TestMap?listen");
+        clearPlayerData();
+        //GetWorld()->ServerTravel("/Game/Maps/Lobby?listen");
+        UGameplayStatics::OpenLevel(GetWorld(), "/Game/Maps/Lobby?listen", true);
     }else {
         if (GEngine)
             GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Could not create server with name: " + serverName.ToString()));
@@ -99,6 +116,8 @@ void UVeilGameInstance::OnFindSessionComplete(bool success){
             GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Server count: " + FString::FromInt(searchResults.Num())));
 
         if (searchResults.Num() > 0) {
+            if (GEngine)
+                GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Joining Server"));
             sessionInterface->JoinSession(0, serverToJoin, searchResults[0]);
         }
     }
@@ -112,7 +131,10 @@ void UVeilGameInstance::OnJoinSessionComplete(FName sessionName, EOnJoinSessionC
     if (APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
         FString joinAddress = "";
         sessionInterface->GetResolvedConnectString(sessionName, joinAddress);
-        if(joinAddress != "")
+        if (joinAddress != "") {
+            if (GEngine)
+                GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Loading map at address: " + joinAddress));
             controller->ClientTravel(joinAddress, ETravelType::TRAVEL_Absolute);
+        }
     }
 }

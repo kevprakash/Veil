@@ -20,7 +20,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AVeilCharacterBase*> getPlayersOnTeam(int team);
 
+	int getTeam(APlayerController* player);
+
+	void swapTeam(APlayerController* player);
+
+	int getNumPlayersOnTeam(int team);
+
 protected:
 
 	void GetLifetimeReplicatedProps(class TArray<class FLifetimeProperty>& outLifetimeProps) const;
+
 };
