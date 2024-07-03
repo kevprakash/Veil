@@ -17,7 +17,7 @@ TArray<AVeilCharacterBase*> AVeilGameState::getPlayersOnTeam(int team) {
 	for (auto data : playerData) {
 		if (data.Value.team == team) {
 			APawn* controlledPawn = data.Key->GetPawn();
-			if (controlledPawn->IsA<AVeilCharacterBase>()) {
+			if (IsValid(controlledPawn) && controlledPawn->IsA<AVeilCharacterBase>()) {
 				AVeilCharacterBase* playerCharacter = Cast<AVeilCharacterBase>(controlledPawn);
 				playersOnTeam.Add(playerCharacter);
 			}

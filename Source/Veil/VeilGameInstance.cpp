@@ -59,7 +59,7 @@ void UVeilGameInstance::CreateServer(FName serverName) {
     FOnlineSessionSettings sessionSettings;
     sessionSettings.bAllowJoinInProgress = true;
     sessionSettings.bIsDedicated = false;
-    sessionSettings.bIsLANMatch = false;
+    sessionSettings.bIsLANMatch = true;
     sessionSettings.bShouldAdvertise = true;
     sessionSettings.bUsesPresence = true;
     sessionSettings.NumPublicConnections = 10;
@@ -73,7 +73,9 @@ void UVeilGameInstance::CreateServer(FName serverName) {
 
 void UVeilGameInstance::OnCreateSessionComplete(FName serverName, bool success) {
     if (success) {
-        GetWorld()->ServerTravel("Maps/TestMap?listen");
+        if (GEngine)
+            GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Created server with name: " + serverName.ToString()));
+        GetWorld()->ServerTravel("/Game/Maps/TestMap?listen");
     }else {
         if (GEngine)
             GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Could not create server with name: " + serverName.ToString()));
@@ -82,7 +84,7 @@ void UVeilGameInstance::OnCreateSessionComplete(FName serverName, bool success) 
 
 void UVeilGameInstance::JoinServer(FName serverName) {
     sessionSearch = MakeShareable(new FOnlineSessionSearch());
-    sessionSearch->bIsLanQuery = false;
+    sessionSearch->bIsLanQuery = true;
     sessionSearch->MaxSearchResults = 10000;
     sessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 
