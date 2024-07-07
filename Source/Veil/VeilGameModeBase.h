@@ -36,6 +36,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void setPlayerLoadout(AController* player, FLoadout loadout);
 
+	UFUNCTION(BlueprintCallable)
+	void endPhase();
+
+	UFUNCTION(BlueprintCallable)
+	void setRoundPhase(GamePhase phase);
+
 protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;
 
@@ -43,4 +49,33 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnMatchLoadPlayer(AController* player);
+
+	virtual void Tick(float deltaTime) override;
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	bool shouldPhaseEnd(EndReason cause);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void resetRound();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void spawnDefenders();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void spawnAttackers();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void endRound();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AVeilPlayerController*> getPlayersOnTeam(int team);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TMap<GamePhase, float> phaseLengths;
+
+	UFUNCTION(BlueprintCallable)
+	void resetPlayerData();
+
+	UFUNCTION(BlueprintCallable)
+	void giveRoundWin(int team);
 };

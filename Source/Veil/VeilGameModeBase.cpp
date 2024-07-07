@@ -3,6 +3,7 @@
 #include "VeilGameModeBase.h"
 #include "VeilGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "VeilPlayerController.h"
 #include "VeilGameState.h"
 
 void AVeilGameModeBase::OnPostLogin(AController* newPlayer) {
@@ -23,6 +24,52 @@ void AVeilGameModeBase::HandleSeamlessTravelPlayer(AController*& newPlayer)
 	}
 }
 
+void AVeilGameModeBase::Tick(float deltaTime)
+{
+	Super::Tick(deltaTime);
+	AVeilGameState* gs = GetWorld()->GetGameState<AVeilGameState>();
+	gs->phaseTimer -= deltaTime;
+
+	if (gs->phaseTimer <= 0.0f) {
+		gs->phaseTimer = 0.0f;
+		if (shouldPhaseEnd(EndReason::TIMEOUT)) { 
+			if (gs->phase == GamePhase::ACTION) {
+				gs->winCondition = WinConditions::TIMEOUT;
+			}
+			endPhase();
+		}
+	}
+}
+
+TArray<AVeilPlayerController*> AVeilGameModeBase::getPlayersOnTeam(int team)
+{
+	TArray<AVeilPlayerController*> ret;
+	auto playerData = getAllPlayerData();
+	for (auto pd : playerData) {
+		if (pd.Value.team == team) {
+			ret.Add(Cast<AVeilPlayerController>(pd.Key));
+		}
+	}
+	return ret;
+}
+
+void AVeilGameModeBase::resetPlayerData()
+{
+	UVeilGameInstance* GI = Cast<UVeilGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GI->resetPlayerData();
+}
+
+void AVeilGameModeBase::giveRoundWin(int team)
+{
+	AVeilGameState* gs = GetWorld()->GetGameState<AVeilGameState>();
+	if (team == 0) {
+		gs->attackerRounds += 1;
+	}
+	else {
+		gs->defenderRounds += 1;
+	}
+}
+
 TMap<AController*, FPLAYER_DATA> AVeilGameModeBase::getAllPlayerData() {
 	UVeilGameInstance* GI = Cast<UVeilGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	return GI->getAllPlayerData();
@@ -31,6 +78,8 @@ TMap<AController*, FPLAYER_DATA> AVeilGameModeBase::getAllPlayerData() {
 AVeilGameModeBase::AVeilGameModeBase(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	bUseSeamlessTravel = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void AVeilGameModeBase::updateGameState() {
@@ -63,9 +112,23 @@ void AVeilGameModeBase::setPlayerLife(AController* player, bool alive, bool forc
 		int delta = alive ? 1 : -1;
 		if (team == 0) {
 			gs->attackerAlive += delta;
+			if (gs->attackerAlive <= 0) {
+				if (shouldPhaseEnd(EndReason::ELIMINATION)) {
+					gs->winCondition = WinConditions::ATTACKERS_ELIMINATED;
+					endPhase();
+				}
+			}
 		}
 		else {
 			gs->defenderAlive += delta;
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("" + FString::FromInt(gs->defenderAlive)));
+			if (gs->defenderAlive <= 0) {
+				if (shouldPhaseEnd(EndReason::ELIMINATION)) { 
+					gs->winCondition = WinConditions::DEFENDERS_ELIMINATED;
+					endPhase();
+				}
+			}
 		}
 	}
 }
@@ -74,4 +137,75 @@ void AVeilGameModeBase::setPlayerLoadout(AController* player, FLoadout loadout)
 {
 	UVeilGameInstance* GI = Cast<UVeilGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	GI->updatePlayerLoadout(player, loadout);
+}
+
+void AVeilGameModeBase::endPhase()
+{
+	AVeilGameState* gs = GetWorld()->GetGameState<AVeilGameState>();
+	GamePhase gamePhase = gs->phase;
+	switch (gamePhase) {
+	case GamePhase::PRE_ROUND:
+		setRoundPhase(GamePhase::PREP);
+		break;
+	case GamePhase::PREP:
+		setRoundPhase(GamePhase::ACTION);
+		break;
+	case GamePhase::ACTION:
+		if (gs->bombPlanted) {
+			setRoundPhase(GamePhase::POST_PLANT);
+		}
+		else {
+			setRoundPhase(GamePhase::POST_ROUND);
+		}
+		break;
+	case GamePhase::POST_PLANT:
+		setRoundPhase(GamePhase::POST_ROUND);
+		break;
+	case GamePhase::POST_ROUND:
+		setRoundPhase(GamePhase::PRE_ROUND);
+		break;
+	}
+}
+
+void AVeilGameModeBase::setRoundPhase(GamePhase phase)
+{
+	AVeilGameState* gs = GetWorld()->GetGameState<AVeilGameState>();
+	gs->phase = phase;
+	switch(phase) {
+	case GamePhase::PRE_ROUND:
+		resetRound();
+		gs->winCondition = WinConditions::NONE;
+		break;
+	case GamePhase::PREP:
+		spawnDefenders();
+		break;
+	case GamePhase::ACTION:
+		spawnAttackers();
+		break;
+	case GamePhase::POST_PLANT:
+		break;
+	case GamePhase::POST_ROUND:
+		endRound();
+		gs->bombPlanted = false;
+		switch (gs->winCondition) {
+		case WinConditions::TIMEOUT:
+			giveRoundWin(1);
+			break;
+		case WinConditions::BOMB_DEFUSED:
+			giveRoundWin(1);
+			break;
+		case WinConditions::ATTACKERS_ELIMINATED:
+			giveRoundWin(1);
+			break;
+		case WinConditions::DEFENDERS_ELIMINATED:
+			giveRoundWin(0);
+			break;
+		case WinConditions::BOMB_DETONATED:
+			giveRoundWin(0);
+			break;
+		}
+		break;
+	}
+
+	gs->phaseTimer = phaseLengths[phase];
 }

@@ -38,6 +38,8 @@ public:
 
 	void clearPlayerData();
 
+	void resetPlayerData();
+
 protected:
 	virtual void Init() override;
 

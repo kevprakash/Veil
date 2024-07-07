@@ -12,6 +12,8 @@ void AVeilGameState::GetLifetimeReplicatedProps(class TArray<class FLifetimeProp
 	DOREPLIFETIME_CONDITION_NOTIFY(AVeilGameState, defenderRounds, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(AVeilGameState, attackerAlive, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(AVeilGameState, defenderAlive, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(AVeilGameState, phase, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(AVeilGameState, phaseTimer, COND_None, REPNOTIFY_Always);
 }
 
 TArray<AVeilCharacterBase*> AVeilGameState::getPlayersOnTeam(int team) {

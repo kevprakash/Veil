@@ -7,6 +7,7 @@
 #include "Online/OnlineSessionNames.h"
 #include <string>
 #include "Kismet/GameplayStatics.h"
+#include "VeilGameState.h"
 #include "Net/UnrealNetwork.h"
 
 void UVeilGameInstance::registerPlayer(AController* newPlayer) {
@@ -78,6 +79,20 @@ TMap<AController*, FPLAYER_DATA> UVeilGameInstance::getAllPlayerData() {
 void UVeilGameInstance::clearPlayerData()
 {
     playerData.Empty();
+}
+
+void UVeilGameInstance::resetPlayerData()
+{
+    for (auto pd : playerData) {
+        updatePlayerLife(pd.Key, false);
+        FLoadout empty;
+        updatePlayerLoadout(pd.Key, empty);
+    }
+
+    AVeilGameState* gs = GetWorld()->GetGameState<AVeilGameState>();
+    gs->attackerAlive = 0;
+    gs->defenderAlive = 0;
+    gs->reinforcements = 10;
 }
 
 void UVeilGameInstance::Init() {

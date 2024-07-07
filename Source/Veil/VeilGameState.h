@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "VeilCharacterBase.h"
+#include "VeilStructs.h"
 #include "VeilGameState.generated.h"
 
 /**
@@ -44,6 +45,18 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Replicated)
 	int defenderAlive = 0;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	bool bombPlanted = false;
+	
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	GamePhase phase = GamePhase::PRE_ROUND;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	WinConditions winCondition = WinConditions::NONE;
+
+	UPROPERTY(BlueprintReadOnly, Replicated);
+	float phaseTimer = 0.0f;
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void subtractReinforcement();

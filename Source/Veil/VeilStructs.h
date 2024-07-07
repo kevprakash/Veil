@@ -6,6 +6,32 @@
 #include "VeilStructs.generated.h"
 
 UENUM(BlueprintType)
+enum class GamePhase : uint8 {
+	PRE_ROUND UMETA(DisplayName = "Pre Round"),
+	PREP UMETA(DisplayName = "Prep"),
+	ACTION UMETA(DisplayName = "Action"),
+	POST_PLANT UMETA(DisplayName = "Post Plant"),
+	POST_ROUND UMETA(DisplayName = "Post Round")
+};
+
+UENUM(BlueprintType)
+enum class EndReason : uint8 {
+	TIMEOUT UMETA(DisplayName = "Timeout"),
+	ELIMINATION UMETA(DisplayName = "Elimination"),
+	OBJECTIVE UMETA(DisplayName = "Objective"),
+};
+
+UENUM(BlueprintType)
+enum class WinConditions : uint8 {
+	NONE				 UMETA(DisplayName = "None"),
+	ATTACKERS_ELIMINATED UMETA(DisplayName = "Attackers Eliminated"),
+	DEFENDERS_ELIMINATED UMETA(DisplayName = "Defenders Eliminated"),
+	BOMB_DETONATED		 UMETA(DisplayName = "Bomb Detonated"),
+	BOMB_DEFUSED		 UMETA(DisplayName = "Bomb Defused"),
+	TIMEOUT				 UMETA(DisplayName = "Timeout")
+};
+
+UENUM(BlueprintType)
 enum class GunName : uint8 {
 
 	TEST UMETA(DisplayName = "TEST"),
@@ -34,7 +60,7 @@ enum class Grip : uint8 {
 UENUM(BlueprintType)
 enum class SideBarrel : uint8 {
 
-	None UMETA(DisplayName = "None"),
+	NONE UMETA(DisplayName = "None"),
 	LASER_SIGHT UMETA(DisplayName = "Laser Sight"),
 	RANGE_FINDER UMETA(DisplayName = "Range Finder")
 };
@@ -42,7 +68,7 @@ enum class SideBarrel : uint8 {
 UENUM(BlueprintType)
 enum class Stock : uint8 {
 
-	Standard UMETA(DisplayName = "Standard"),
+	STANDARD UMETA(DisplayName = "Standard"),
 	HEAVY_DUTY UMETA(DisplayName = "Heavy Duty"),
 	LIGHT UMETA(DisplayName = "Light"),
 	NONE UMETA(DisplayName = "None")
@@ -63,17 +89,17 @@ struct FGunData {
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	GunName name;
+	GunName name = GunName::TEST;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	Muzzle muzzle;
+	Muzzle muzzle = Muzzle::NONE;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	Grip grip;
+	Grip grip = Grip::HORIZONTAL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	SideBarrel sideBarrel;
+	SideBarrel sideBarrel = SideBarrel::NONE;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	Stock stock;
+	Stock stock = Stock::STANDARD;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	Scope scope;
+	Scope scope = Scope::x1;
 };
 
 USTRUCT(BlueprintType)
@@ -93,7 +119,7 @@ struct FPLAYER_DATA {
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int team;
+	int team = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool alive = true;
