@@ -44,9 +44,20 @@ void AVeilPlayerController::updateReplicatedStats_Implementation()
 {
 	AVeilGameState* gs = GetWorld()->GetGameState<AVeilGameState>();
 	team = gs->getTeam(this);
+
+	if (team == -1) {
+		FTimerHandle temp;
+		GetWorldTimerManager().SetTimer(temp, this, &AVeilPlayerController::updateReplicatedStats_Implementation, 1.0f, false);
+		return;
+	}
+
 	attackerCount = gs->getNumPlayersOnTeam(0);
 	defenderCount = gs->getNumPlayersOnTeam(1);
 
+	AVeilCharacterBase* character = Cast<AVeilCharacterBase>(GetPawn());
+	if (IsValid(character)) {
+		character->setTeam(team);
+	}
 	/*
 	if (GEngine) {
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Team: " + FString::FromInt(team)));

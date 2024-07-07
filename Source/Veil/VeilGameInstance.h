@@ -28,7 +28,11 @@ public:
 
 	void setPlayerData(AController* player, FPLAYER_DATA newData);
 
-	void updatePlayerTeam(AController* player, int newTeam);
+	bool updatePlayerTeam(AController* player, int newTeam);
+
+	bool updatePlayerLife(AController* player, bool alive);
+
+	bool updatePlayerLoadout(AController* player, FLoadout loadout);
 
 	TMap<AController*, FPLAYER_DATA> getAllPlayerData();
 

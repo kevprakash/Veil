@@ -12,7 +12,7 @@
 void UVeilGameInstance::registerPlayer(AController* newPlayer) {
     if (newPlayer) {
         FPLAYER_DATA newPlayerData;
-        newPlayerData.team = 0; //playerData.Num() % 2;
+        newPlayerData.team = playerData.Num() % 2;
         playerData.Add( newPlayer, newPlayerData );
         UE_LOG(LogTemp, Log, TEXT("Registered player with team %d"), newPlayerData.team);
 
@@ -43,9 +43,32 @@ void UVeilGameInstance::setPlayerData(AController* player, FPLAYER_DATA newData)
     playerData[player] = newData;
 }
 
-void UVeilGameInstance::updatePlayerTeam(AController* player, int newTeam)
+bool UVeilGameInstance::updatePlayerTeam(AController* player, int newTeam)
 {
-    playerData[player].team = newTeam;
+    if (playerData[player].team != newTeam) {
+        playerData[player].team = newTeam;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool UVeilGameInstance::updatePlayerLife(AController* player, bool alive)
+{
+    if (playerData[player].alive != alive) {
+        playerData[player].alive = alive;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool UVeilGameInstance::updatePlayerLoadout(AController* player, FLoadout loadout)
+{
+    playerData[player].loadout = loadout;
+    return true;
 }
 
 TMap<AController*, FPLAYER_DATA> UVeilGameInstance::getAllPlayerData() {

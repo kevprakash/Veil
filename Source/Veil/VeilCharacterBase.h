@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GAS", meta = (AllowPrivateAccess = "true"))
 	const UVeilAttributeSet* attributeSet;
 
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int team;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -41,4 +44,10 @@ public:
 	{
 		return abilitySystemComponent;
 	}
+
+	UFUNCTION(BlueprintCallable)
+	int getTeam();
+
+	UFUNCTION(BlueprintCallable)
+	void setTeam(int newTeam);
 };

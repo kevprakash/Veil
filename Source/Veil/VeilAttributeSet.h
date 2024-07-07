@@ -25,7 +25,7 @@ class VEIL_API UVeilAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 
-protected:
+public:
 
 	// Health Related
 

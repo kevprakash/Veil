@@ -30,6 +30,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void startGame();
 
+	UFUNCTION(BlueprintCallable)
+	void setPlayerLife(AController* player, bool alive, bool force);
+
+	UFUNCTION(BlueprintCallable)
+	void setPlayerLoadout(AController* player, FLoadout loadout);
+
 protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;
 

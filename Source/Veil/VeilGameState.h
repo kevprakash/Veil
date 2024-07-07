@@ -20,11 +20,33 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AVeilCharacterBase*> getPlayersOnTeam(int team);
 
+	UFUNCTION(BlueprintCallable)
 	int getTeam(APlayerController* player);
 
 	void swapTeam(APlayerController* player);
 
 	int getNumPlayersOnTeam(int team);
+
+	UFUNCTION(BlueprintCallable)
+	int getNumPlayersAliveOnTeam(int team);
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int reinforcements = 10;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int attackerRounds = 0;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int defenderRounds = 0;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int attackerAlive = 0;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	int defenderAlive = 0;
+
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void subtractReinforcement();
 
 protected:
 

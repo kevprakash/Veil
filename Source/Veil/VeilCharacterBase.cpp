@@ -2,6 +2,7 @@
 
 
 #include "VeilCharacterBase.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AVeilCharacterBase::AVeilCharacterBase()
@@ -41,6 +42,16 @@ void AVeilCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 }
 
+int AVeilCharacterBase::getTeam()
+{
+	return team;
+}
+
+void AVeilCharacterBase::setTeam(int newTeam)
+{
+	team = newTeam;
+}
+
 void AVeilCharacterBase::PossessedBy(AController* newController) 
 {
 	Super::PossessedBy(newController);
@@ -48,3 +59,8 @@ void AVeilCharacterBase::PossessedBy(AController* newController)
 	SetOwner(newController);
 }
 
+void AVeilCharacterBase::GetLifetimeReplicatedProps(class TArray<class FLifetimeProperty>& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AVeilCharacterBase, team);
+}

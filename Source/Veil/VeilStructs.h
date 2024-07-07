@@ -5,15 +5,6 @@
 #include "CoreMinimal.h"
 #include "VeilStructs.generated.h"
 
-USTRUCT(BlueprintType)
-struct FPLAYER_DATA {
-
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int team;
-};
-
 UENUM(BlueprintType)
 enum class GunName : uint8 {
 
@@ -86,7 +77,7 @@ struct FGunData {
 };
 
 USTRUCT(BlueprintType)
-struct FLoadOut {
+struct FLoadout {
 
 	GENERATED_USTRUCT_BODY()
 
@@ -94,4 +85,19 @@ struct FLoadOut {
 	FGunData primary;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGunData secondary;
+};
+
+USTRUCT(BlueprintType)
+struct FPLAYER_DATA {
+
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int team;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool alive = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLoadout loadout;
 };

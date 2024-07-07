@@ -52,3 +52,26 @@ void AVeilGameModeBase::startGame()
 {
 	GetWorld()->ServerTravel("/Game/Maps/TestMap?listen");
 }
+
+void AVeilGameModeBase::setPlayerLife(AController* player, bool alive, bool force) {
+	UVeilGameInstance* GI = Cast<UVeilGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	bool lifeChanged = GI->updatePlayerLife(player, alive);
+	if (force || lifeChanged) {
+		AVeilGameState* gs = GetWorld()->GetGameState<AVeilGameState>();
+		auto pc = Cast<APlayerController>(player);
+		int team = gs->getTeam(pc);
+		int delta = alive ? 1 : -1;
+		if (team == 0) {
+			gs->attackerAlive += delta;
+		}
+		else {
+			gs->defenderAlive += delta;
+		}
+	}
+}
+
+void AVeilGameModeBase::setPlayerLoadout(AController* player, FLoadout loadout)
+{
+	UVeilGameInstance* GI = Cast<UVeilGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GI->updatePlayerLoadout(player, loadout);
+}
