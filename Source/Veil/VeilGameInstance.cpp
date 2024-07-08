@@ -13,7 +13,7 @@
 void UVeilGameInstance::registerPlayer(AController* newPlayer) {
     if (newPlayer) {
         FPLAYER_DATA newPlayerData;
-        newPlayerData.team = playerData.Num() % 2;
+        newPlayerData.team = (playerData.Num() + 1) % 2;
         playerData.Add( newPlayer, newPlayerData );
         UE_LOG(LogTemp, Log, TEXT("Registered player with team %d"), newPlayerData.team);
 

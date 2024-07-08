@@ -9,6 +9,7 @@ ADestructibleWallSegment::ADestructibleWallSegment()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	SetRootComponent(mesh);
@@ -18,6 +19,6 @@ ADestructibleWallSegment::ADestructibleWallSegment()
 	abilitySystemComponent->SetIsReplicated(true);
 
 	attributeSet = CreateDefaultSubobject<UVeilAttributeSet>(TEXT("AttributeSet"));
-	attributeSet->InitHealth(200.0f);
-	attributeSet->InitMaxHealth(200.0f);
+	attributeSet->InitHealth(500.0f);
+	attributeSet->InitMaxHealth(500.0f);
 }

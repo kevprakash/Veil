@@ -126,7 +126,7 @@ void AVeilGameModeBase::setPlayerLife(AController* player, bool alive, bool forc
 			if (gs->defenderAlive <= 0) {
 				if (shouldPhaseEnd(EndReason::ELIMINATION)) { 
 					gs->winCondition = WinConditions::DEFENDERS_ELIMINATED;
-					endPhase();
+					setRoundPhase(GamePhase::POST_ROUND);
 				}
 			}
 		}
