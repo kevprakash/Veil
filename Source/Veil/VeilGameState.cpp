@@ -52,6 +52,8 @@ int AVeilGameState::getTeam(APlayerController* player) {
 	}
 }
 
+
+
 void AVeilGameState::swapTeam(APlayerController* player){
 	AVeilGameModeBase* gameMode = Cast<AVeilGameModeBase>(GetWorld()->GetAuthGameMode());
 
@@ -82,4 +84,11 @@ int AVeilGameState::getNumPlayersAliveOnTeam(int team)
 void AVeilGameState::subtractReinforcement_Implementation()
 {
 	reinforcements--;
+}
+
+void AVeilGameState::setWinCondition_Implementation(WinConditions newWinCon)
+{
+	winCondition = newWinCon;
+	AVeilGameModeBase* gameMode = Cast<AVeilGameModeBase>(GetWorld()->GetAuthGameMode());
+	gameMode->setRoundPhase(GamePhase::POST_ROUND);
 }

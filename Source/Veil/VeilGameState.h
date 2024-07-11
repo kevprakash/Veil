@@ -61,6 +61,10 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void subtractReinforcement();
 
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void setWinCondition(WinConditions newWinCon);
+
+
 protected:
 
 	void GetLifetimeReplicatedProps(class TArray<class FLifetimeProperty>& outLifetimeProps) const;

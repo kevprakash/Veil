@@ -34,7 +34,7 @@ void AVeilGameModeBase::Tick(float deltaTime)
 		gs->phaseTimer = 0.0f;
 		if (shouldPhaseEnd(EndReason::TIMEOUT)) { 
 			if (gs->phase == GamePhase::ACTION) {
-				gs->winCondition = WinConditions::TIMEOUT;
+				gs->setWinCondition(WinConditions::TIMEOUT);
 			}
 			endPhase();
 		}
@@ -114,8 +114,7 @@ void AVeilGameModeBase::setPlayerLife(AController* player, bool alive, bool forc
 			gs->attackerAlive += delta;
 			if (gs->attackerAlive <= 0) {
 				if (shouldPhaseEnd(EndReason::ELIMINATION)) {
-					gs->winCondition = WinConditions::ATTACKERS_ELIMINATED;
-					endPhase();
+					gs->setWinCondition(WinConditions::ATTACKERS_ELIMINATED);
 				}
 			}
 		}
@@ -124,9 +123,8 @@ void AVeilGameModeBase::setPlayerLife(AController* player, bool alive, bool forc
 			if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("" + FString::FromInt(gs->defenderAlive)));
 			if (gs->defenderAlive <= 0) {
-				if (shouldPhaseEnd(EndReason::ELIMINATION)) { 
-					gs->winCondition = WinConditions::DEFENDERS_ELIMINATED;
-					setRoundPhase(GamePhase::POST_ROUND);
+				if (shouldPhaseEnd(EndReason::ELIMINATION)) {
+					gs->setWinCondition(WinConditions::DEFENDERS_ELIMINATED);
 				}
 			}
 		}
@@ -183,6 +181,7 @@ void AVeilGameModeBase::setRoundPhase(GamePhase phase)
 		spawnAttackers();
 		break;
 	case GamePhase::POST_PLANT:
+		gs->bombPlanted = true;
 		break;
 	case GamePhase::POST_ROUND:
 		endRound();
