@@ -11,6 +11,7 @@ Uses Steamworks for networking
 # Features
 ## Current
 - First person and 3rd person models with basic animations
+  - These are marketplace assets for testing, need to replace at some point
 - Modifiable gun system with attachments
   - 4 Scopes - 1x, 2.5x, 4x, 8x
   - 5 Barrels - Flash Hider, Compensator, Muzzle Break, Extended Barrel, Suppressor
