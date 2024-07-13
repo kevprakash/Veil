@@ -30,6 +30,7 @@ Uses Steamworks for networking
 ## Planned
 - Joining lobbies, setting teams and starting a match
   - Extreme priority, required to test really anything
+  - Somewhat works but only on LAN
 - Loadout selection
   - Low priority, useful for testing but not necessary
 - Gadgets
