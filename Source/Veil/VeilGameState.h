@@ -17,6 +17,7 @@ class VEIL_API AVeilGameState : public AGameState
 	GENERATED_BODY()
 	
 public:
+	AVeilGameState();
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AVeilCharacterBase*> getPlayersOnTeam(int team);

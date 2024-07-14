@@ -5,6 +5,10 @@
 #include "VeilGameModeBase.h"
 
 
+AVeilGameState::AVeilGameState(): AGameState() {
+	NetUpdateFrequency = 120.0f;
+}
+
 void AVeilGameState::GetLifetimeReplicatedProps(class TArray<class FLifetimeProperty>& OutLifetimeProps) const {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME_CONDITION_NOTIFY(AVeilGameState, reinforcements, COND_None, REPNOTIFY_Always);
